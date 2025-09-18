@@ -1,61 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <title>3D 皮卡風格參考</title>
+    <meta charset="utf-8">
+    <title>OBJ 模型 AR</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
-    <script>
-      AFRAME.registerComponent('color-fix', {
-        init: function () {
-          this.el.addEventListener('model-loaded', (e) => {
-            const model = e.detail.model;
-            model.traverse((n) => {
-              if (n.isMesh) {
-                n.castShadow = true; n.receiveShadow = true;
-                // 若臉頰或眼睛太暗，可把材質改成 MeshStandardMaterial
-                if (!n.material || !('metalness' in n.material)) {
-                  n.material = new THREE.MeshStandardMaterial({
-                    color: n.material && n.material.color ? n.material.color : 0xffffff,
-                    roughness: 0.9,
-                    metalness: 0.0
-                  });
-                }
-              }
-            });
-          });
-        }
-      });
-
-      AFRAME.registerComponent('idle-bob', {
-        schema: {amp:{default:0.03}, speed:{default:2}},
-        tick: function (t) {
-          const y0 = this.y0 ?? (this.y0 = this.el.object3D.position.y);
-          this.el.object3D.position.y = y0 + Math.sin(t/1000*this.data.speed)*this.data.amp;
-        }
-      });
-    </script>
   </head>
   <body style="margin:0; overflow:hidden;">
-    <a-scene
-      embedded
-      vr-mode-ui="enabled:false"
-      renderer="alpha:true; antialias:true; physicallyCorrectLights:true"
-      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled:false">
+    <a-scene embedded arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false">
 
       <!-- 燈光 -->
-      <a-entity light="type: ambient; intensity: 0.9"></a-entity>
+      <a-entity light="type: ambient; intensity: 1"></a-entity>
       <a-entity light="type: directional; intensity: 0.9" position="0 2 1"></a-entity>
 
-      <!-- 掛在 Hiro 標記上 -->
+      <!-- Hiro 標記 -->
       <a-marker preset="hiro">
-        <a-entity id="pika3d"
-                  gltf-model="assets/pika_like_demo.glb"
-                  position="0 0 0"
+        <a-entity obj-model="obj: url(assets/model.obj); mtl: url(assets/model.mtl)"
+                  scale="0.2 0.2 0.2"
                   rotation="0 180 0"
-                  scale="0.35 0.35 0.35"
-                  color-fix
-                  idle-bob>
+                  position="0 0 0">
         </a-entity>
       </a-marker>
 
